@@ -28,5 +28,3 @@ for filename in os.listdir(src_path):
 
 #Confirmation
 print(f"Copied {count} files")
-
-
