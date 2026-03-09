@@ -4,14 +4,17 @@ import math
 import numpy as np
 
 
-def load_csv(filepath):
+def load_csv(filepath: str) -> pd.DataFrame:
     """
     Reads a CSV file and returns a pandas DataFrame
     """
     return pd.read_csv(filepath, na_values=["\\N"])
 
 
-def constructors_graph_1(df):
+def constructors_graph_1(df: pd.DataFrame) -> None:
+    """
+     Create scatter plots of constructor points vs raceId.
+    """
     unique_names = df['name'].unique()
     names_per_plot = 20
     num_plots = math.ceil(len(unique_names) / names_per_plot)
@@ -30,7 +33,10 @@ def constructors_graph_1(df):
         plt.savefig(f'scatter_plot_{i+1}.jpg', format='jpg', dpi=300)
 
 
-def constructors_graph_2(df):
+def constructors_graph_2(df :pd.DataFrame) -> None:
+    """
+    Create bar plots of constructor points vs raceId. 
+    """
     unique_names = df['name'].unique()
     names_per_plot = 20
     num_plots = math.ceil(len(unique_names) / names_per_plot)
@@ -56,7 +62,10 @@ def constructors_graph_2(df):
         plt.savefig(f'bar_plot_{i+1}.jpg', format='jpg', dpi=300)
 
 
-def drivers_graph_1(df):
+def drivers_graph_1(df: pd.DataFrame ) -> None:
+    """
+    Create scatter plots of driver points vs raceId.
+    """
     unique_names = df['surname'].unique()
     names_per_plot = 20
     num_plots = math.ceil(len(unique_names) / names_per_plot)
@@ -75,7 +84,10 @@ def drivers_graph_1(df):
         plt.savefig(f'scatter_plot_{i+1}.jpg', format='jpg', dpi=300)
 
 
-def drivers_graph_2(df):
+def drivers_graph_2(df: pd.DataFrame) -> None:
+    """
+     Create bar plots of driver points vs raceId.
+     """
     unique_names = df['surname'].unique()
     names_per_plot = 20
     num_plots = math.ceil(len(unique_names) / names_per_plot)
@@ -102,6 +114,9 @@ def drivers_graph_2(df):
 
 
 def main():
+    """
+    Load driver data, merge standings, and generate plots.
+    """
     dataframe2 = load_csv('datasets/raw/driver_standings.csv')
     dataframe1 = load_csv('datasets/raw/drivers.csv')
 
