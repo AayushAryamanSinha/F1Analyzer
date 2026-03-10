@@ -1,6 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from typing import Dict 
+from typing import Dict
 import altair as alt
 
 
@@ -49,12 +49,10 @@ def build_q2_dataset(
     results: pd.DataFrame,
     driver_standings: pd.DataFrame
 ) -> pd.DataFrame:
-    
     """
-
-    Create a season-level dataset linking first race winners to final championship positions.
+    Create a season-level dataset linking first race winners to final
+    championship positions.
     """
-
     first_races = (
         races.sort_values(["year", "round"])
         .groupby("year")
@@ -103,7 +101,7 @@ def build_q2_dataset(
         inplace=True
     )
 
-    return merged_q2 
+    return merged_q2
 
 
 def inspect_q2_dataset(merged_q2: pd.DataFrame) -> None:
@@ -129,7 +127,6 @@ def inspect_q2_dataset(merged_q2: pd.DataFrame) -> None:
 def summarize_q2(merged_q2: pd.DataFrame) -> None:
     """
     Print descriptive statistics and outcome counts for Question 2.
-    
     """
 
     print("\n" + "=" * 60)
@@ -190,13 +187,13 @@ def visualize_q2(merged_q2: pd.DataFrame) -> None:
     plt.ylabel("Number of Seasons")
     plt.savefig("q2_first_race_winner_champion.png",
                 bbox_inches="tight")
-    
+
 
 def build_q3_dataset(
     pit_stops: pd.DataFrame,
     results: pd.DataFrame
 ) -> pd.DataFrame:
-    
+
     """
     Create race-level dataset linking total pit stop
     time to finishing position.
@@ -215,7 +212,8 @@ def build_q3_dataset(
 
     merged = pd.merge(
         pit_totals,
-        results[["raceId", "driverId", "position"]].dropna(subset=["position"]),
+        results[["raceId", "driverId", "position"]].dropna(
+            subset=["position"]),
         on=["raceId", "driverId"],
         how="inner"
     )
@@ -225,7 +223,8 @@ def build_q3_dataset(
         inplace=True
     )
 
-    return merged 
+    return merged
+
 
 def inspect_q3_dataset(merged_q3: pd.DataFrame) -> None:
     """
@@ -264,7 +263,6 @@ def summarize_q3(merged_q3: pd.DataFrame) -> None:
     print(merged_q3["finish_position"].describe())
 
 
-
 def visualize_q2_altair(
                             merged_q2: pd.DataFrame,
                             drivers: pd.DataFrame
@@ -274,7 +272,7 @@ def visualize_q2_altair(
     """
 
     df = merged_q2.copy()
-    
+
     drivers = drivers.copy()
     drivers["driver_name"] = drivers["forename"] + " " + drivers["surname"]
 
@@ -284,7 +282,6 @@ def visualize_q2_altair(
         how="left"
     )
 
-  
     df["became_champion"] = df["final_championship_position"] == 1
 
     chart = alt.Chart(df).mark_circle(size=120).encode(
@@ -362,7 +359,7 @@ def visualize_q3(merged_q3: pd.DataFrame) -> None:
 
     plt.savefig("q3_pit_time_bins.png",
                 bbox_inches="tight")
-    plt.show() 
+    plt.show()
 
 
 def visualize_q3_altair(
