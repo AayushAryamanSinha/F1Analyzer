@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from typing import Dict
+from typing import Dict 
+import altair as alt
 
 
 def load_datasets() -> Dict[str, pd.DataFrame]:
@@ -263,6 +264,61 @@ def summarize_q4(merged_q4: pd.DataFrame) -> None:
     print(merged_q4["finish_position"].describe())
 
 
+
+def visualize_q2_altair(
+                            merged_q2: pd.DataFrame,
+                            drivers: pd.DataFrame
+                        ) -> None:
+    """
+    Interactive visualization showing whether the first race winner
+    """
+
+    df = merged_q2.copy()
+    
+    drivers = drivers.copy()
+    drivers["driver_name"] = drivers["forename"] + " " + drivers["surname"]
+
+    df = df.merge(
+        drivers[["driverId", "driver_name"]],
+        on="driverId",
+        how="left"
+    )
+
+  
+    df["became_champion"] = df["final_championship_position"] == 1
+
+    chart = alt.Chart(df).mark_circle(size=120).encode(
+        x=alt.X("year:O", title="Season"),
+        y=alt.Y(
+            "final_championship_position",
+            title="Final Championship Position"
+        ),
+        color=alt.Color(
+            "became_champion:N",
+            title="Outcome",
+            scale=alt.Scale(
+                domain=[True, False],
+                range=["green", "red"]
+            )
+        ),
+        tooltip=[
+            alt.Tooltip("year", title="Season"),
+            alt.Tooltip("driver_name", title="First Race Winner"),
+            alt.Tooltip(
+                "final_championship_position",
+                title="Final Championship Position"
+            ),
+            alt.Tooltip("became_champion", title="Won Championship")
+        ]
+    ).properties(
+        width=900,
+        height=450,
+        title="Did the First Race Winner Become World Champion?"
+    ).interactive()
+
+    chart.save("q2_first_race_interactive.html")
+
+
 def visualize_q4(merged_q4: pd.DataFrame) -> None:
     """
     Generate two visualizations for Question 4.
@@ -306,7 +362,61 @@ def visualize_q4(merged_q4: pd.DataFrame) -> None:
 
     plt.savefig("q4_pit_time_bins.png",
                 bbox_inches="tight")
-    plt.show()
+    plt.show() 
+
+
+def visualize_q4_altair(
+                            merged_q4: pd.DataFrame,
+                            drivers: pd.DataFrame,
+                            races: pd.DataFrame
+                        ) -> None:
+    """
+    Interactive Altair visualization for pit stop time vs finish position
+    """
+
+    df = merged_q4.copy()
+
+    if "pit_time_bin" in df.columns:
+        df = df.drop(columns=["pit_time_bin"])
+
+    drivers["driver_name"] = drivers["forename"] + " " + drivers["surname"]
+    df = df.merge(
+        drivers[["driverId", "driver_name"]],
+        on="driverId",
+        how="left"
+    )
+
+    df = df.merge(
+        races[["raceId", "name", "year"]],
+        on="raceId",
+        how="left"
+    )
+
+    df.rename(columns={"name": "race_name"}, inplace=True)
+
+    chart = alt.Chart(df).mark_circle(size=70).encode(
+        x=alt.X(
+            "total_pit_time",
+            title="Total Pit Stop Time (ms)"
+        ),
+        y=alt.Y(
+            "finish_position",
+            title="Finish Position"
+        ),
+        tooltip=[
+            alt.Tooltip("driver_name", title="Driver"),
+            alt.Tooltip("race_name", title="Race"),
+            alt.Tooltip("year", title="Year"),
+            alt.Tooltip("total_pit_time", title="Pit Time (ms)"),
+            alt.Tooltip("finish_position", title="Finish Position")
+        ]
+    ).properties(
+        width=900,
+        height=500,
+        title="Pit Stop Time vs Finish Position (Interactive)"
+    ).interactive()
+
+    chart.save("q4_pit_vs_finish_altair.html")
 
 
 def main() -> None:
@@ -325,6 +435,7 @@ def main() -> None:
     inspect_q2_dataset(merged_q2)
     summarize_q2(merged_q2)
     visualize_q2(merged_q2)
+    visualize_q2_altair(merged_q2, datasets["drivers"])
 
     merged_q4 = build_q4_dataset(
         datasets["pit_stops"],
@@ -334,6 +445,7 @@ def main() -> None:
     inspect_q4_dataset(merged_q4)
     summarize_q4(merged_q4)
     visualize_q4(merged_q4)
+    visualize_q4_altair(merged_q4,  datasets["drivers"], datasets["races"])
 
 
 if __name__ == "__main__":
