@@ -163,7 +163,7 @@ def main():
     uncomment the following code and comment everything else out
     """
     # the team we wish to analyze the drivers of:
-    team = 'McLaren'
+    team = 'Mercedes'
 
     # save and merge names to results.csv
     drivers_df = load_csv('datasets/raw/drivers.csv')
@@ -243,7 +243,7 @@ def main():
         plot_bgcolor='#b5b5b5',
     )
     fig.show()
-    fig.write_html('q1_racepoints.html')
+    fig.write_html('q1_points_earned_by_drivers_on_team.html')
 
 
 if __name__ == '__main__':
