@@ -1,4 +1,28 @@
-Information about necessary downloads or installations, which may include libraries, environments, or data.
-A description of each submitted file that is relevant to running your project. All .py files must have descriptions in the README.md.
-Step-by-step instructions for us to run your project to reproduce your results, including (but not limited to) any relevant setup, terminal commands, or changing relative paths.
-Anything else we need to know about running your project!
+Needs Enviorment: 
+- kagglehub api
+- altair 
+- plotly
+- numpy
+- andas 
+
+Instructions: 
+- If the csv are not downloaded please run get_data.py 
+- Ensure you have kagglehub in your enviorment to donwload the datasets needed to run the program 
+- for questions 1: 
+  - 
+
+- for question 2 and 3: 
+  - run the research_questions_2_3_development_plus_eda the plots will appear. Once you have looked at them you can cancel out of them and then go to file explorer and run q2_first_race.interactive.html and q4.pit_vs_finish_altair.html to run to see the interactive maps
+
+Files: 
+-research_questions_1_development_plus_eda.py: Includes the deveoped implementations of the challenge goals and the EDA for the datasets needed for the question one. 
+
+-research_questions_2_3_development_plus_eda.py: Includes the deveoped implementations of the challenge goals and the EDA for the datasets needed for the questions two and three. 
+
+-get_data.py: gets data for someone running without csv files installed in a directory. 
+
+-testing_eda.py: tests eda results for all three questions. 
+
+
+
+
