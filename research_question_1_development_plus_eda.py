@@ -1,3 +1,8 @@
+"""
+This program filters and prunes the raw F1 data based on the requirements
+for Research Question 1, both exploratory data analysis and the graphs
+required to answer the question are included
+"""
 import pandas as pd
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt

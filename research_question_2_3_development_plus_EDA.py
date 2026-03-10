@@ -1,3 +1,8 @@
+"""
+This program filters and prunes the raw F1 data based on the requirements
+for Research Questions 2 and 3, both exploratory data analysis and the graphs
+required to answer these questions are included
+"""
 import pandas as pd
 import matplotlib.pyplot as plt
 from typing import Dict

@@ -1,3 +1,8 @@
+"""
+This program tests the research question methods found in
+research_question_1_development_plus_eda.py and in
+research_question_2_3_development_plus_EDA.py
+"""
 import pandas as pd
 
 from research_question_2_3_development_plus_EDA import (

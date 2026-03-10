@@ -1,3 +1,7 @@
+"""
+This program gets the F1 csv data from kagglehub using the kagglehub api
+and saves to the folder you are currently in
+"""
 import kagglehub
 import os
 import shutil
@@ -7,7 +11,7 @@ src_path = kagglehub.dataset_download(
     "rohanrao/formula-1-world-championship-1950-2020"
 )
 
-# Defining path 
+# Defining path
 DST = os.path.join("datasets", "raw")
 
 
@@ -17,7 +21,7 @@ os.makedirs(DST, exist_ok=True)
 
 count = 0
 
-# Copying from src to DST 
+# Copying from src to DST
 for filename in os.listdir(src_path):
     if filename.endswith(".csv"):
         shutil.copy(
