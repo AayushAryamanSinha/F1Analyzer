@@ -192,7 +192,7 @@ def visualize_q2(merged_q2: pd.DataFrame) -> None:
                 bbox_inches="tight")
     
 
-def build_q4_dataset(
+def build_q3_dataset(
     pit_stops: pd.DataFrame,
     results: pd.DataFrame
 ) -> pd.DataFrame:
@@ -227,7 +227,7 @@ def build_q4_dataset(
 
     return merged 
 
-def inspect_q4_dataset(merged_q4: pd.DataFrame) -> None:
+def inspect_q3_dataset(merged_q3: pd.DataFrame) -> None:
     """
     Print shape, columns, and missing values for the
     merged Question 4 dataset.
@@ -237,17 +237,17 @@ def inspect_q4_dataset(merged_q4: pd.DataFrame) -> None:
     print("QUESTION 4 MERGED DATASET")
     print("=" * 60)
 
-    print("Shape:", merged_q4.shape)
+    print("Shape:", merged_q3.shape)
 
     print("\nColumns:")
-    print(merged_q4.columns.tolist())
+    print(merged_q3.columns.tolist())
 
     print("\nMissing Values:")
-    print(merged_q4.isna().sum())
+    print(merged_q3.isna().sum())
     print("\n")
 
 
-def summarize_q4(merged_q4: pd.DataFrame) -> None:
+def summarize_q3(merged_q3: pd.DataFrame) -> None:
     """
     Print descriptive statistics for pit stop time
     and finishing position.
@@ -258,10 +258,10 @@ def summarize_q4(merged_q4: pd.DataFrame) -> None:
     print("=" * 60)
 
     print("\nTotal Pit Stop Time Summary:")
-    print(merged_q4["total_pit_time"].describe())
+    print(merged_q3["total_pit_time"].describe())
 
     print("\nFinish Position Summary:")
-    print(merged_q4["finish_position"].describe())
+    print(merged_q3["finish_position"].describe())
 
 
 
@@ -319,15 +319,15 @@ def visualize_q2_altair(
     chart.save("q2_first_race_interactive.html")
 
 
-def visualize_q4(merged_q4: pd.DataFrame) -> None:
+def visualize_q3(merged_q3: pd.DataFrame) -> None:
     """
     Generate two visualizations for Question 4.
     """
 
     plt.figure()
     plt.scatter(
-        merged_q4["total_pit_time"],
-        merged_q4["finish_position"],
+        merged_q3["total_pit_time"],
+        merged_q3["finish_position"],
         alpha=0.4
     )
 
@@ -335,18 +335,18 @@ def visualize_q4(merged_q4: pd.DataFrame) -> None:
     plt.xlabel("Total Pit Stop Time (ms)")
     plt.ylabel("Finish Position")
 
-    plt.savefig("q4_pit_time_vs_finish.png",
+    plt.savefig("q3_pit_time_vs_finish.png",
                 bbox_inches="tight")
     plt.show()
 
-    merged_q4["pit_time_bin"] = pd.qcut(
-        merged_q4["total_pit_time"],
+    merged_q3["pit_time_bin"] = pd.qcut(
+        merged_q3["total_pit_time"],
         q=4,
         duplicates="drop"
     )
 
     bin_means = (
-        merged_q4.groupby("pit_time_bin")["finish_position"]
+        merged_q3.groupby("pit_time_bin")["finish_position"]
         .mean()
     )
 
@@ -360,13 +360,13 @@ def visualize_q4(merged_q4: pd.DataFrame) -> None:
     plt.xlabel("Pit Time Quartile (Low → High)")
     plt.ylabel("Average Finish Position")
 
-    plt.savefig("q4_pit_time_bins.png",
+    plt.savefig("q3_pit_time_bins.png",
                 bbox_inches="tight")
     plt.show() 
 
 
-def visualize_q4_altair(
-                            merged_q4: pd.DataFrame,
+def visualize_q3_altair(
+                            merged_q3: pd.DataFrame,
                             drivers: pd.DataFrame,
                             races: pd.DataFrame
                         ) -> None:
@@ -374,7 +374,7 @@ def visualize_q4_altair(
     Interactive Altair visualization for pit stop time vs finish position
     """
 
-    df = merged_q4.copy()
+    df = merged_q3.copy()
 
     if "pit_time_bin" in df.columns:
         df = df.drop(columns=["pit_time_bin"])
@@ -416,7 +416,7 @@ def visualize_q4_altair(
         title="Pit Stop Time vs Finish Position (Interactive)"
     ).interactive()
 
-    chart.save("q4_pit_vs_finish_altair.html")
+    chart.save("q3_pit_vs_finish_altair.html")
 
 
 def main() -> None:
@@ -437,15 +437,15 @@ def main() -> None:
     visualize_q2(merged_q2)
     visualize_q2_altair(merged_q2, datasets["drivers"])
 
-    merged_q4 = build_q4_dataset(
+    merged_q3 = build_q3_dataset(
         datasets["pit_stops"],
         datasets["results"]
     )
 
-    inspect_q4_dataset(merged_q4)
-    summarize_q4(merged_q4)
-    visualize_q4(merged_q4)
-    visualize_q4_altair(merged_q4,  datasets["drivers"], datasets["races"])
+    inspect_q3_dataset(merged_q3)
+    summarize_q3(merged_q3)
+    visualize_q3(merged_q3)
+    visualize_q3_altair(merged_q3,  datasets["drivers"], datasets["races"])
 
 
 if __name__ == "__main__":
