@@ -1,7 +1,8 @@
 import pandas as pd
+
 from research_question_2_3_development_plus_EDA import (
     build_q2_dataset,
-    build_q4_dataset
+    build_q3_dataset
 )
 
 
@@ -90,7 +91,6 @@ def test_multiple_seasons() -> None:
     assert season_2001.iloc[0]["final_championship_position"] == 3
 
 
-
 def test_pit_time_aggregation() -> None:
     """Test pit stop times are summed correctly."""
 
@@ -106,13 +106,13 @@ def test_pit_time_aggregation() -> None:
         "position": [5]
     })
 
-    merged = build_q4_dataset(pit_stops, results)
+    merged = build_q3_dataset(pit_stops, results)
 
     assert merged.iloc[0]["total_pit_time"] == 5000
     assert merged.iloc[0]["finish_position"] == 5
 
 
-def test_multiple_drivers_q4() -> None:
+def test_multiple_drivers_q3() -> None:
     """Test multiple drivers in same race."""
 
     pit_stops = pd.DataFrame({
@@ -127,7 +127,7 @@ def test_multiple_drivers_q4() -> None:
         "position": [3, 1]
     })
 
-    merged = build_q4_dataset(pit_stops, results)
+    merged = build_q3_dataset(pit_stops, results)
 
     assert len(merged) == 2
     assert merged[merged["driverId"] == 10]["total_pit_time"].iloc[0] == 2000
@@ -149,10 +149,57 @@ def test_missing_finish_removed() -> None:
         "position": [None]
     })
 
-    merged = build_q4_dataset(pit_stops, results)
+    merged = build_q3_dataset(pit_stops, results)
 
     assert len(merged) == 0
 
+
+def load_csv(filepath: str) -> pd.DataFrame:
+    """
+    Reads a CSV file and returns a pandas DataFrame
+    """
+    return pd.read_csv(filepath, na_values=['\\N'])
+
+
+def test_research_question_1() -> None:
+    """
+    This tests if the team_results merged dataframe follows the same trends as
+    the graph of the team and its driver (yes we can see taller peaks = more
+    points, but does the data itself show this trend)
+    """
+    team = 'Mercedes'
+    # save and merge names to results.csv
+    drivers_df = load_csv('datasets/raw/drivers.csv')
+    constructors_df = load_csv('datasets/raw/constructors.csv')
+    races_df = load_csv('datasets/raw/races.csv')
+    results_df = load_csv('datasets/raw/results.csv')
+    results_merged_df = pd.merge(
+        constructors_df[['constructorId', 'name']],
+        results_df, on='constructorId', how='left'
+    )
+    results_merged_df = pd.merge(
+        drivers_df[['driverId', 'forename', 'surname']],
+        results_merged_df, on='driverId', how='left'
+    )
+    results_merged_df = pd.merge(
+        races_df[['raceId', 'date']],
+        results_merged_df, on='raceId', how='left'
+    )
+    results_merged_df['date'] = pd.to_datetime(results_merged_df['date'])
+
+    # filter results to just one team
+    team_results = results_merged_df[
+        (results_merged_df['name'] == team)
+    ]
+    team_results['total_points'] = team_results.groupby('raceId')[
+        'points'].transform('sum')
+    team_results = team_results.sort_values(by=['date', 'driverId'])
+    # test Hamilton vs Schumacher's average career earned points
+    team_results.reset_index()
+    assert (((team_results[team_results['driverId'] == 30]['points'].sum()) /
+            (team_results[team_results['driverId'] == 30]['points'].count())) <
+            ((team_results[team_results['driverId'] == 1]['points'].sum()) /
+            (team_results[team_results['driverId'] == 1]['points'].count())))
 
 
 def run_tests() -> None:
@@ -163,7 +210,7 @@ def run_tests() -> None:
     test_multiple_seasons()
 
     test_pit_time_aggregation()
-    test_multiple_drivers_q4()
+    test_multiple_drivers_q3()
     test_missing_finish_removed()
 
     print("All EDA tests passed.")
